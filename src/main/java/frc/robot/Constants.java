@@ -1,7 +1,6 @@
 package frc.robot;
 
 public final class Constants {
-
   public static final int RIGHT_FRONT_SPARK = 10;
   public static final int RIGHT_BACK_SPARK = 11;
   public static final int LEFT_FRONT_SPARK = 12;

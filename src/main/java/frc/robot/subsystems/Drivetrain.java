@@ -5,9 +5,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
@@ -29,6 +34,10 @@ public class Drivetrain extends SubsystemBase {
    static DifferentialDrive differentialDrive = new DifferentialDrive(rightMotors, leftMotors);
 
    AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+   private static DifferentialDriveOdometry m_odometry;
+
+   m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), 0, 0);
 
    public Drivetrain() {
     rightFrontSpark = new CANSparkMax(Constants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
@@ -95,4 +104,29 @@ public class Drivetrain extends SubsystemBase {
     return leftBackEncoder.getPosition();
    }
 
+   @Override
+   public void periodic() {
+     // This method will be called once per scheduler run
+     public void updateOdometry() {
+      m_odometry.update(
+         Rotation2d.fromDegrees(getHeading()),
+         leftFrontEncoder.getPosition(),
+         rightFrontEncoder.getPosition());
+     SmartDashboard.putNumber("ControllerY", -driveControl.getLeftY());
+     SmartDashboard.putNumber("ControllerX", -driveControl.getRightX());
+     }
+   }
+
+   public double getHeading() {
+      return ahrs.getAngle();
+   }
+
+   public Pose2d getPose() {
+      return m_odometry.getPoseMeters();
+   }
+
+   public void resetOdometry(Pose2d pose) {
+      // resetEncoders();
+      m_odometry.resetPosition(Rotation2d.fromDegrees(getHeading()), leftFrontEncoder.getPosition(), rightFrontEncoder.getPosition(), pose);
+    }
 }
