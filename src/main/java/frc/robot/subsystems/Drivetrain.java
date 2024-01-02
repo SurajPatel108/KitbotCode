@@ -104,17 +104,31 @@ public class Drivetrain extends SubsystemBase {
     return leftBackEncoder.getPosition();
    }
 
+   public double getYaw() {
+      return ahrs.getYaw();
+   }
+
+   public double getPitch() {
+      return ahrs.getPitch();
+   }
+
+   public double getroll() {
+      return ahrs.getRoll()
+   }
+
    @Override
    public void periodic() {
-     // This method will be called once per scheduler run
-     public void updateOdometry() {
+    // This method will be called once per scheduler run
+    updateOdometry();
+    SmartDashboard.putNumber("ControllerY", -driveControl.getLeftY());
+    SmartDashboard.putNumber("ControllerX", -driveControl.getRightX());
+   }
+
+   public void updateOdometry() {
       m_odometry.update(
-         Rotation2d.fromDegrees(getHeading()),
-         leftFrontEncoder.getPosition(),
-         rightFrontEncoder.getPosition());
-     SmartDashboard.putNumber("ControllerY", -driveControl.getLeftY());
-     SmartDashboard.putNumber("ControllerX", -driveControl.getRightX());
-     }
+        Rotation2d.fromDegrees(getHeading()),
+        leftFrontEncoder.getPosition(),
+        rightFrontEncoder.getPosition());
    }
 
    public double getHeading() {
