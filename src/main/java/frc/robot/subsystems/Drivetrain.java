@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -26,6 +27,12 @@ public class Drivetrain extends SubsystemBase {
    RelativeEncoder rightBackEncoder;
    RelativeEncoder leftFrontEncoder;
    RelativeEncoder leftBackEncoder;
+
+   private final PIDController drivePIDController = new PIDController(0.0, 0.0, 0.0);
+   private final PIDController turnPIDController = new PIDController(0.0, 0.0, 0.0);
+
+   private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(0.0, 0.0); // drive ks, drive kv
+   private final SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(0.0, 0.0); // drive ks, drive kv
 
    static MotorControllerGroup rightMotors;
    static MotorControllerGroup leftMotors;
