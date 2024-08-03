@@ -43,8 +43,6 @@ public class Drivetrain extends SubsystemBase {
 
    private static DifferentialDriveOdometry m_odometry;
 
-   m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), 0, 0);
-
    public Drivetrain() {
     rightFrontSpark = new CANSparkMax(Constants.RIGHT_FRONT_SPARK, MotorType.kBrushless);
     rightBackSpark = new CANSparkMax(Constants.RIGHT_BACK_SPARK, MotorType.kBrushless);
@@ -73,10 +71,24 @@ public class Drivetrain extends SubsystemBase {
     leftMotors = new MotorControllerGroup(leftFrontSpark, leftBackSpark);
     dDrive = new DifferentialDrive(leftMotors, rightMotors);
 
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()), new Pose2d());
+
+    leftPIDController.setTolerance(0.05);
+    rightPIDController.setTolerance(0.05)
+
    }
 
    public static void drive(double speed, double rotation) {
-    differentialDrive.arcadeDrive(speed, rotation);
+    double leftSpeed = speed + rotation;
+    double rightSpeed = speed - rotation;
+
+    leftPIDController.setSetpoint(leftSpeed);
+    rightPIDController.setSetpoint(rightSpeed);
+
+    double leftOutput = leftPIDController.calculate(leftFrontEncoder.getVelocity());
+    double rightOutput = rightPIDController.calculate(rightFrontEncoder.getVelocity());
+
+    differentialDrive.tankDrive(leftOutput, rightOutput);
     // takes speed and rotation thing and makes it drive
    }
 
