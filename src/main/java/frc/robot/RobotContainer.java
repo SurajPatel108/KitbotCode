@@ -35,7 +35,7 @@ public class RobotContainer {
   }
   
   public static void triggerBindings() {
-    driveSpeed = driveControl.getLeftY(); // Adjust axis index if needed
+    driveSpeed = driveControl.getLeftY();
     turnSpeed = turnControl.getLeftX();
     Drivetrain.drive(driveSpeed, turnSpeed);
     //see drift and make no drift 
