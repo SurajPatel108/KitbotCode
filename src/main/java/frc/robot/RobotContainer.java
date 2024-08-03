@@ -24,7 +24,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(
       new RunCommand(() -> drivetrain.drive(
-        -driveControl.getLeftY(), 
+        driveControl.getLeftY(), 
         turnControl.getLeftX()
       ), drivetrain) // will run contiously
     );
