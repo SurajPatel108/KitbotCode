@@ -13,22 +13,21 @@ public class RobotContainer {
   public static double driveSpeed;
   public static double turnSpeed;
 
-  // The robot's subsystems and commands are defined here...
   private Drivetrain drivetrain = new Drivetrain();
 
   private static final XboxController driveControl = new Joystick(Constants.kDriverControllerPort);
-  private static final XboxController turnControl = new Joystick(Constants.kDriverControllerPort_2);  
-
-  private final PWMSparkMax m_leftMotor = new PWMSparkMax(Constants.LEFT_FRONT_SPARK);
-  private final PWMSparkMax m_rightMotor = new PWMSparkMax(Constants.RIGHT_FRONT_SPARK);
-  private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
-
+  private static final XboxController turnControl = new Joystick(Constants.kDriverControllerPort_2); 
 
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
-    //drivetrain.setDefaultCommand(new DriveCommand(drivetrain, driveJoystick));
+    drivetrain.setDefaultCommand(
+      new RunCommand(() -> drivetrain.drive(
+        -driveControl.getLeftY(), 
+        turnControl.getLeftX()
+      ), drivetrain) // will run contiously
+    );
   }
 
   private void configureBindings() {
